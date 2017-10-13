@@ -26,7 +26,7 @@ class MaxIntSet
   end
 
   def validate!(num)
-    raise "not a valid input" unless is_valid?(num)
+    raise "Out of bounds" unless is_valid?(num)
   end
 end
 
@@ -68,14 +68,15 @@ class ResizingIntSet
   end
 
   def insert(num)
-    @count += 1
-    self[num] << num
-    resize! if count >= num_buckets
+    unless include?(num)
+      self[num] << num
+      @count += 1
+      resize! if count >= num_buckets
+    end
   end
 
   def remove(num)
-    @count -= 1
-    self[num].delete(num)
+    @count -= 1 if self[num].delete(num)
   end
 
   def include?(num)
@@ -102,13 +103,3 @@ class ResizingIntSet
   end
 
 end
-
-p x = ResizingIntSet.new
-
-19.times do
-    x.insert(rand(500))
-  end
-p x.print_num_buckets
-p x.insert(3)
-p x.print_num_buckets
-p x
